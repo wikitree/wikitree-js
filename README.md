@@ -9,6 +9,11 @@ Add `wikitree-js` package to your project:
 npm install wikitree-js
 ```
 
+Import package:
+```typescript
+import {getAncestors} from 'wikitree-js';
+```
+
 # Usage
 
 ## getAncestors
@@ -103,3 +108,40 @@ responsePromise.then(response => {
 Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getrelatives?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetRelatives#index.ts) (Node.Js)
+
+## login (Node.Js)
+
+This login method works only in Node.Js. To log in in a Web application use 
+
+### Example
+
+```typescript
+const auth = await login('user@example.com', 'P@s$w0Rd');
+const response = await getRelatives(['Private-123'], {}, { auth });
+```
+
+Live demo: [Replit](https://replit.com/@PeWu/WikiTree-Login#index.ts)
+
+## login (Web)
+
+The Web login only works for apps hosted on https://apps.wikitree.com/. See [WikiTree Apps](https://www.wikitree.com/wiki/Project:WikiTree_Apps) page for details on how to host your app there.
+
+The login flow works as follows:
+
+1. Redirect the user to the WikiTree login page giving it a URL to redirect back:
+```typescript
+navigateToLoginPage('https://apps.wikitree.com/my-app');
+```
+2. Once the user logs in, they will be redirected back to your app with an `authcode` URL parameter, e.g.
+```
+https://apps.wikitree.com/my-app?authcode=abc123abc
+```
+
+3. The app needs to take this authcode and call `clientLogin` with it.
+```typescript
+clientLogin(authcode);
+```
+
+4. All subsequent requests to WikiTree will be authenticated. 
+
+Use `getLoggedInUserName()` to get the currently logged in user's profile name.
