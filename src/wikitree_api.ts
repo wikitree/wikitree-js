@@ -5,6 +5,8 @@ import {
   BioFormat,
   ClientLoginResponse,
   GetAncestorsRequest,
+  GetDescendantsRequest,
+  GetPersonRequest,
   GetRelativesRequest,
   Person,
   PersonField,
@@ -70,6 +72,35 @@ async function wikiTreeGet(request: WikiTreeRequest, options?: ApiOptions) {
   return result;
 }
 
+/** Optional arguments for the GetPerson API call. */
+export interface GetPersonArgs {
+  bioFormat?: BioFormat;
+  fields?: Array<PersonField> | '*';
+  resolveRedirect?: boolean;
+}
+
+/**
+ * Retrieves a single person record from WikiTree.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getPerson.md
+ */
+export async function getPerson(
+  key: string,
+  args?: GetPersonArgs,
+  options?: ApiOptions
+): Promise<Person> {
+  const request: GetPersonRequest = {
+    action: 'getPerson',
+    key,
+    bioFormat: args?.bioFormat,
+    fields:
+      args?.fields instanceof Array ? args.fields.join(',') : args?.fields,
+    resolveRedirect: args?.resolveRedirect ? '1' : undefined,
+  };
+  const response = await wikiTreeGet(request, options);
+  return response[0].person as Person;
+}
+
 /** Optional arguments for the GetAncestors API call. */
 interface GetAncestorsArgs {
   depth?: number;
@@ -109,6 +140,37 @@ export interface GetRelativesArgs {
   getSiblings?: boolean;
   bioFormat?: BioFormat;
   fields?: Array<PersonField> | '*';
+}
+
+/** Optional arguments for the GetDescendants API call. */
+interface GetDescendantsArgs {
+  depth?: number;
+  bioFormat?: BioFormat;
+  fields?: Array<PersonField> | '*';
+  resolveRedirect?: boolean;
+}
+
+/**
+ * Retrieves descendants from WikiTree for the given person ID.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getDescendants.md
+ */
+export async function getDescendants(
+  key: string,
+  args?: GetDescendantsArgs,
+  options?: ApiOptions
+): Promise<Person[]> {
+  const request: GetDescendantsRequest = {
+    action: 'getDescendants',
+    key,
+    depth: args?.depth,
+    bioFormat: args?.bioFormat,
+    fields:
+      args?.fields instanceof Array ? args.fields.join(',') : args?.fields,
+    resolveRedirect: args?.resolveRedirect ? '1' : undefined,
+  };
+  const response = await wikiTreeGet(request, options);
+  return response[0].descendants as Person[];
 }
 
 /**
@@ -208,7 +270,7 @@ export function getLoggedInUserName(): string | undefined {
   return Cookies.get(USER_NAME_COOKIE);
 }
 
-// === NodeJS-specific code ===
+// === Node.js-specific code ===
 
 /**
  * Logs in to WikiTree returning authentication credentials.

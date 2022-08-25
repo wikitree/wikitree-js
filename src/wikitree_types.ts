@@ -140,6 +140,22 @@ export type PersonField =
   | 'Mother'
   | 'Derived.LongName';
 
+/** Format of the biography field. */
+export type BioFormat = 'wiki' | 'html' | 'both';
+
+/**
+ * WikiTree API getPerson request.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getPerson.md
+ */
+export interface GetPersonRequest {
+  action: 'getPerson';
+  key: string;
+  bioFormat?: BioFormat;
+  fields?: string;
+  resolveRedirect?: '1';
+}
+
 /**
  * WikiTree API getAncestors request.
  *
@@ -154,9 +170,25 @@ export interface GetAncestorsRequest {
   resolveRedirect?: '1';
 }
 
-export type BioFormat = 'wiki' | 'html' | 'both';
+/**
+ * WikiTree API getDescendants request.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getDescendants.md
+ */
+export interface GetDescendantsRequest {
+  action: 'getDescendants';
+  key: string;
+  depth?: number;
+  bioFormat?: BioFormat;
+  fields?: string;
+  resolveRedirect?: '1';
+}
 
-/** WikiTree API getRelatives request. */
+/**
+ * WikiTree API getRelatives request.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getRelatives.md
+ */
 export interface GetRelativesRequest {
   action: 'getRelatives';
   keys: string;
@@ -175,9 +207,11 @@ export interface ClientLoginRequest {
 }
 
 export type WikiTreeRequest =
+  | ClientLoginRequest
+  | GetPersonRequest
   | GetAncestorsRequest
-  | GetRelativesRequest
-  | ClientLoginRequest;
+  | GetDescendantsRequest
+  | GetRelativesRequest;
 
 /** WikiTree API clientLogin response. */
 export interface ClientLoginResponse {
