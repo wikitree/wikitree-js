@@ -1,3 +1,5 @@
+![npm](https://img.shields.io/npm/v/wikitree-js.svg)
+
 # wikitree-js
 
 JavaScript library to access the WikiTree API for Node.js and Web environments.
