@@ -128,6 +128,62 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getancestors2?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetAncestors2#index.ts) (Node.Js)
 
+## getDescendants
+
+[API documentation](https://github.com/wikitree/wikitree-api/blob/main/getDescendants.md#wikitree-api-getdescendants)
+
+### Example 1
+
+Async/await:
+```typescript
+const response = await getDescendants('Skłodowska-2');
+```
+
+Promise:
+```typescript
+const responsePromise = getDescendants('Skłodowska-2')
+
+responsePromise.then(response => {
+  // ...
+});
+```
+
+Live demo:
+* [Stackblitz](https://stackblitz.com/edit/wikitree-getdescendants1?file=index.ts) (Web)
+* [Replit](https://replit.com/@PeWu/WikiTree-GetDescendants1#index.ts) (Node.Js)
+
+### Example 2
+
+Async/await:
+```typescript
+const response = await getDescendants(
+  'Skłodowska-2',
+  {
+    fields: ['Id', 'Name', 'FirstName', 'LastNameAtBirth', 'Father', 'Mother'],
+    depth: 2,
+  }
+);
+```
+
+Promise:
+```typescript
+const responsePromise = getDescendants(
+  'Skłodowska-2',
+  {
+    fields: ['Id', 'Name', 'FirstName', 'LastNameAtBirth', 'Father', 'Mother'],
+    depth: 1,
+  }
+);
+
+responsePromise.then(response => {
+  // ...
+});
+```
+
+Live demo:
+* [Stackblitz](https://stackblitz.com/edit/wikitree-getdescendants2?file=index.ts) (Web)
+* [Replit](https://replit.com/@PeWu/WikiTree-GetDescendants2#index.ts) (Node.Js)
+
 ## getRelatives
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getRelatives.md#wikitree-api-getrelatives)
