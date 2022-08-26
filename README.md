@@ -18,6 +18,60 @@ import {getAncestors} from 'wikitree-js';
 
 # Usage
 
+## getPerson
+
+[API documentation](https://github.com/wikitree/wikitree-api/blob/main/getPerson.md#wikitree-api-getperson)
+
+### Example 1
+
+Async/await:
+```typescript
+const response = await getPerson('Skłodowska-2');
+```
+
+Promise:
+```typescript
+const responsePromise = getPerson('Skłodowska-2')
+
+responsePromise.then(response => {
+  // ...
+});
+```
+
+Live demo:
+* [Stackblitz](https://stackblitz.com/edit/wikitree-getperson1?file=index.ts) (Web)
+* [Replit](https://replit.com/@PeWu/WikiTree-GetPerson1#index.ts) (Node.Js)
+
+### Example 2
+
+Async/await:
+```typescript
+const response = await getPerson(
+  'Skłodowska-2',
+  {
+    fields: ['Id', 'Name', 'FirstName', 'LastNameAtBirth', 'Father', 'Mother'],
+  }
+);
+```
+
+Promise:
+```typescript
+const responsePromise = getPerson(
+  'Skłodowska-2',
+  {
+    fields: ['Id', 'Name', 'FirstName', 'LastNameAtBirth', 'Father', 'Mother'],
+  }
+);
+
+responsePromise.then(response => {
+  // ...
+});
+```
+
+Live demo:
+* [Stackblitz](https://stackblitz.com/edit/wikitree-getperson2?file=index.ts) (Web)
+* [Replit](https://replit.com/@PeWu/WikiTree-GetPerson2#index.ts) (Node.Js)
+
 ## getAncestors
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getAncestors.md#wikitree-api-getancestors)
@@ -125,6 +179,8 @@ const response = await getRelatives(['Private-123'], {}, { auth });
 Live demo: [Replit](https://replit.com/@PeWu/WikiTree-Login#index.ts)
 
 ## login (Web)
+
+[API documentation](https://github.com/wikitree/wikitree-api/blob/main/authentication.md#wikitree-api-authentication)
 
 The Web login only works for apps hosted on https://apps.wikitree.com/. See [WikiTree Apps](https://www.wikitree.com/wiki/Project:WikiTree_Apps) page for details on how to host your app there.
 
