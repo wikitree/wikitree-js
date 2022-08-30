@@ -32,16 +32,23 @@ export class WikiTreeError extends Error {
   }
 }
 
+export interface WikiTreeAuthentication {
+  cookies: string;
+}
+
 /** Additional API options common to all requests. */
 export interface ApiOptions {
   /** Authentication credentials as returned by the login() function. */
-  auth?: { cookies: any };
+  auth?: WikiTreeAuthentication;
   /** Alternative API URL. */
   apiUrl?: string;
 }
 
 /** Sends a request to the WikiTree API. Returns the raw response. */
-async function fetchWikiTree(request: WikiTreeRequest, options?: ApiOptions) {
+export async function fetchWikiTree(
+  request: WikiTreeRequest,
+  options?: ApiOptions
+) {
   const requestData = new FormData();
   requestData.append('format', 'json');
   for (const key in request) {
@@ -63,7 +70,10 @@ async function fetchWikiTree(request: WikiTreeRequest, options?: ApiOptions) {
 }
 
 /** Sends a request to the WikiTree API. Returns the parsed response JSON. */
-async function wikiTreeGet(request: WikiTreeRequest, options?: ApiOptions) {
+export async function wikiTreeGet(
+  request: WikiTreeRequest,
+  options?: ApiOptions
+) {
   const response = await fetchWikiTree(request, options);
   const result = await response.json();
   if (result[0]?.status) {
@@ -210,6 +220,33 @@ export async function getRelatives(
   ) as Person[];
 }
 
+/**
+ * Returns the logged in user name or undefined if not logged in.
+ *
+ * In the browser, call this function without arguments.
+ * This is not an authoritative answer. The result of this function relies on
+ * the cookies set on the apps.wikitree.com domain under which this application
+ * is hosted. The authoritative source of login information is in cookies set on
+ * the api.wikitree.com domain.
+ *
+ * In Node.js, call this function with the auth parameter. This is an
+ * authoritative answer because the login flow is under control of the
+ * wikitree-js library.
+ */
+export function getLoggedInUserName(
+  auth?: WikiTreeAuthentication
+): string | undefined {
+  if (!auth) {
+    // Return user name stored in browser cookies.
+    return Cookies.get(USER_NAME_COOKIE);
+  }
+
+  // Extract user name from cookies in WikiTreeAuthentication.
+  const regex = new RegExp(`${USER_NAME_COOKIE}=(.*?);`);
+  const match = auth.cookies.match(regex);
+  return match ? match[1] : undefined;
+}
+
 // === Browser-specific code ===
 
 /**
@@ -258,18 +295,6 @@ export async function clientLogin(
   return result;
 }
 
-/**
- * Returns the logged in user name or undefined if not logged in.
- *
- * This is not an authoritative answer. The result of this function relies on
- * the cookies set on the apps.wikitree.com domain under which this application
- * is hosted. The authoritative source of login information is in cookies set on
- * the api.wikitree.com domain.
- */
-export function getLoggedInUserName(): string | undefined {
-  return Cookies.get(USER_NAME_COOKIE);
-}
-
 // === Node.js-specific code ===
 
 /**
@@ -277,12 +302,15 @@ export function getLoggedInUserName(): string | undefined {
  * This function will not work in the browser because it handles cookies directly.
  * Throws an exception if login fails.
  */
-export async function login(email: string, password: string) {
+export async function login(
+  email: string,
+  password: string
+): Promise<WikiTreeAuthentication> {
   const authcode = await getAuthcode(email, password);
   return { cookies: await getAuthCookies(authcode) };
 }
 
-async function getAuthcode(email: string, password: string) {
+async function getAuthcode(email: string, password: string): Promise<string> {
   const response = await fetchWikiTree({
     action: 'clientLogin',
     doLogin: 1,
@@ -296,7 +324,7 @@ async function getAuthcode(email: string, password: string) {
   return response.headers.get('location')!.replace('https://x/?authcode=', '');
 }
 
-async function getAuthCookies(authcode: string) {
+async function getAuthCookies(authcode: string): Promise<string> {
   const response = await fetchWikiTree({
     action: 'clientLogin',
     authcode,
