@@ -1,4 +1,5 @@
-![npm](https://img.shields.io/npm/v/wikitree-js.svg)
+[![npm](https://img.shields.io/npm/v/wikitree-js.svg)](https://www.npmjs.com/package/wikitree-js)
+[![Node.js CI](https://github.com/PeWu/wikitree-js/actions/workflows/node.js.yml/badge.svg)](https://github.com/PeWu/wikitree-js/actions/workflows/node.js.yml)
 
 # wikitree-js
 
