@@ -5,7 +5,7 @@
 
 JavaScript library to access the WikiTree API for Node.js and Web environments.
 
-# Setup
+## Setup
 
 Add `wikitree-js` package to your project:
 ```
@@ -17,13 +17,13 @@ Import package:
 import {getAncestors} from 'wikitree-js';
 ```
 
-# Usage
+## Usage
 
-## getPerson
+### getPerson
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getPerson.md#wikitree-api-getperson)
 
-### Example 1
+#### Example 1
 
 Async/await:
 ```typescript
@@ -43,7 +43,7 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getperson1?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetPerson1#index.ts) (Node.Js)
 
-### Example 2
+#### Example 2
 
 Async/await:
 ```typescript
@@ -73,11 +73,11 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getperson2?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetPerson2#index.ts) (Node.Js)
 
-## getAncestors
+### getAncestors
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getAncestors.md#wikitree-api-getancestors)
 
-### Example 1
+#### Example 1
 
 Async/await:
 ```typescript
@@ -97,7 +97,7 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getancestors1?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetAncestors1#index.ts) (Node.Js)
 
-### Example 2
+#### Example 2
 
 Async/await:
 ```typescript
@@ -129,11 +129,11 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getancestors2?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetAncestors2#index.ts) (Node.Js)
 
-## getDescendants
+### getDescendants
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getDescendants.md#wikitree-api-getdescendants)
 
-### Example 1
+#### Example 1
 
 Async/await:
 ```typescript
@@ -153,7 +153,7 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getdescendants1?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetDescendants1#index.ts) (Node.Js)
 
-### Example 2
+#### Example 2
 
 Async/await:
 ```typescript
@@ -185,11 +185,11 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getdescendants2?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetDescendants2#index.ts) (Node.Js)
 
-## getRelatives
+### getRelatives
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/getRelatives.md#wikitree-api-getrelatives)
 
-### Example
+#### Example
 
 Async/await:
 ```typescript
@@ -222,11 +222,11 @@ Live demo:
 * [Stackblitz](https://stackblitz.com/edit/wikitree-getrelatives?file=index.ts) (Web)
 * [Replit](https://replit.com/@PeWu/WikiTree-GetRelatives#index.ts) (Node.Js)
 
-## login (Node.Js)
+### login (Node.Js)
 
 This login method works only in Node.Js. To log in in a Web application use 
 
-### Example
+#### Example
 
 ```typescript
 const auth = await login('user@example.com', 'P@s$w0Rd');
@@ -235,7 +235,7 @@ const response = await getRelatives(['Private-123'], {}, { auth });
 
 Live demo: [Replit](https://replit.com/@PeWu/WikiTree-Login#index.ts)
 
-## login (Web)
+### login (Web)
 
 [API documentation](https://github.com/wikitree/wikitree-api/blob/main/authentication.md#wikitree-api-authentication)
 
