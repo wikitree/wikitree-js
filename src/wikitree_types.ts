@@ -149,7 +149,6 @@ export type BioFormat = 'wiki' | 'html' | 'both';
  * See also: https://github.com/wikitree/wikitree-api/blob/main/getPerson.md
  */
 export interface GetPersonRequest {
-  appId?: string;
   action: 'getPerson';
   key: string;
   bioFormat?: BioFormat;
@@ -163,7 +162,6 @@ export interface GetPersonRequest {
  * See also: https://github.com/wikitree/wikitree-api/blob/main/getAncestors.md
  */
 export interface GetAncestorsRequest {
-  appId?: string;
   action: 'getAncestors';
   key: string;
   depth?: number;
@@ -178,7 +176,6 @@ export interface GetAncestorsRequest {
  * See also: https://github.com/wikitree/wikitree-api/blob/main/getDescendants.md
  */
 export interface GetDescendantsRequest {
-  appId?: string;
   action: 'getDescendants';
   key: string;
   depth?: number;
@@ -193,7 +190,6 @@ export interface GetDescendantsRequest {
  * See also: https://github.com/wikitree/wikitree-api/blob/main/getRelatives.md
  */
 export interface GetRelativesRequest {
-  appId?: string;
   action: 'getRelatives';
   keys: string;
   getParents?: 'true';
@@ -206,7 +202,6 @@ export interface GetRelativesRequest {
 
 /** WikiTree API clientLogin request. */
 export interface ClientLoginRequest {
-  appId?: string;
   action: 'clientLogin';
   authcode: string;
 }
