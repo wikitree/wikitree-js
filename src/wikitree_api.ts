@@ -13,7 +13,11 @@ import {
   WikiTreeRequest,
 } from './wikitree_types';
 
+/** Default API URL if not explicitly specified. */
 const WIKITREE_API_URL = 'https://api.wikitree.com/api.php';
+
+/** Default appId sent if not explicitly specified. */
+const WIKITREE_JS_APPID = 'wikitree-js';
 
 /**
  * Cookie where the logged in user name is stored. This cookie is shared
@@ -42,6 +46,8 @@ export interface ApiOptions {
   auth?: WikiTreeAuthentication;
   /** Alternative API URL. */
   apiUrl?: string;
+  /** Application id used for statistical purposes. */
+  appId?: string;
 }
 
 /** Sends a request to the WikiTree API. Returns the raw response. */
@@ -51,6 +57,7 @@ export async function fetchWikiTree(
 ) {
   const requestData = new FormData();
   requestData.append('format', 'json');
+  requestData.append('appId', options?.appId ?? WIKITREE_JS_APPID);
   for (const key in request) {
     if (request[key]) {
       requestData.append(key, request[key]);
@@ -282,12 +289,16 @@ export function navigateToLoginPage(returnUrl: string) {
 }
 
 export async function clientLogin(
-  authcode: string
+  authcode: string,
+  options?: ApiOptions
 ): Promise<ClientLoginResponse> {
-  const response = await wikiTreeGet({
-    action: 'clientLogin',
-    authcode,
-  });
+  const response = await wikiTreeGet(
+    {
+      action: 'clientLogin',
+      authcode,
+    },
+    options
+  );
   const result = response.clientLogin;
   if (result.result === 'Success') {
     Cookies.set(USER_NAME_COOKIE, result.username);
@@ -310,25 +321,38 @@ export async function login(
   return { cookies: await getAuthCookies(authcode) };
 }
 
-async function getAuthcode(email: string, password: string): Promise<string> {
-  const response = await fetchWikiTree({
-    action: 'clientLogin',
-    doLogin: 1,
-    returnURL: 'https://x/',
-    wpEmail: email,
-    wpPassword: password,
-  } as any);
+async function getAuthcode(
+  email: string,
+  password: string,
+  options?: ApiOptions
+): Promise<string> {
+  const response = await fetchWikiTree(
+    {
+      action: 'clientLogin',
+      doLogin: 1,
+      returnURL: 'https://x/',
+      wpEmail: email,
+      wpPassword: password,
+    } as any,
+    options
+  );
   if (response.status !== 302) {
     throw new WikiTreeError('Invalid login credentials');
   }
   return response.headers.get('location')!.replace('https://x/?authcode=', '');
 }
 
-async function getAuthCookies(authcode: string): Promise<string> {
-  const response = await fetchWikiTree({
-    action: 'clientLogin',
-    authcode,
-  });
+async function getAuthCookies(
+  authcode: string,
+  options?: ApiOptions
+): Promise<string> {
+  const response = await fetchWikiTree(
+    {
+      action: 'clientLogin',
+      authcode,
+    },
+    options
+  );
   const result = await response.json();
   if (result.clientLogin?.result !== 'Success') {
     throw new WikiTreeError('Could not authorize authcode');

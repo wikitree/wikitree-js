@@ -61,6 +61,7 @@ describe('fetchWikiTree', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getPerson',
       key: 'Test-1',
       fields: 'Name,Id',
@@ -111,6 +112,27 @@ describe('fetchWikiTree', () => {
       })
     );
   });
+
+  test('send custom appId', async () => {
+    mockFetch({});
+
+    await wikiTreeGet(
+      {
+        action: 'getPerson',
+        key: 'Test-1',
+      },
+      { appId: 'custom-id' }
+    );
+
+    expect(mockedFetch).toHaveBeenCalledTimes(1);
+    const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
+    expectFormDataToContainData(requestedData, {
+      format: 'json',
+      appId: 'custom-id',
+      action: 'getPerson',
+      key: 'Test-1',
+    });
+  });
 });
 
 describe('getPerson', () => {
@@ -124,6 +146,7 @@ describe('getPerson', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getPerson',
       key: 'Test-1',
     });
@@ -143,6 +166,7 @@ describe('getPerson', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getPerson',
       key: 'Test-1',
       bioFormat: 'html',
@@ -164,6 +188,7 @@ describe('getAncestors', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getAncestors',
       key: 'Test-1',
     });
@@ -185,6 +210,7 @@ describe('getAncestors', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getAncestors',
       key: 'Test-1',
       depth: '2',
@@ -207,6 +233,7 @@ describe('getDescendants', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getDescendants',
       key: 'Test-1',
     });
@@ -228,6 +255,7 @@ describe('getDescendants', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getDescendants',
       key: 'Test-1',
       depth: '2',
@@ -250,6 +278,7 @@ describe('getRelatives', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getRelatives',
       keys: 'Test-1',
     });
@@ -273,6 +302,7 @@ describe('getRelatives', () => {
     const requestedData = mockedFetch.mock.calls[0][1].body as any as FormData;
     expectFormDataToContainData(requestedData, {
       format: 'json',
+      appId: 'wikitree-js',
       action: 'getRelatives',
       keys: 'Test-1',
       getParents: 'true',
