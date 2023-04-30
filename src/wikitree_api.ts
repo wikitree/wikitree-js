@@ -13,7 +13,11 @@ import {
   WikiTreeRequest,
 } from './wikitree_types';
 
+/** Default API URL if not explicitly specified. */
 const WIKITREE_API_URL = 'https://api.wikitree.com/api.php';
+
+/** Default appId sent if not explicitly specified. */
+const WIKITREE_JS_APPID = 'wikitree-js';
 
 /**
  * Cookie where the logged in user name is stored. This cookie is shared
@@ -42,7 +46,7 @@ export interface ApiOptions {
   auth?: WikiTreeAuthentication;
   /** Alternative API URL. */
   apiUrl?: string;
-  /** Optional appId. */
+  /** Application id used for statistical purposes. */
   appId?: string;
 }
 
@@ -51,9 +55,9 @@ export async function fetchWikiTree(
   request: WikiTreeRequest,
   options?: ApiOptions
 ) {
-  request.appId ??= options?.appId;
   const requestData = new FormData();
   requestData.append('format', 'json');
+  requestData.append('appId', options?.appId ?? WIKITREE_JS_APPID);
   for (const key in request) {
     if (request[key]) {
       requestData.append(key, request[key]);
@@ -77,7 +81,6 @@ export async function wikiTreeGet(
   request: WikiTreeRequest,
   options?: ApiOptions
 ) {
-  request.appId ??= options?.appId;
   const response = await fetchWikiTree(request, options);
   const result = await response.json();
   if (result[0]?.status) {
@@ -88,7 +91,6 @@ export async function wikiTreeGet(
 
 /** Optional arguments for the GetPerson API call. */
 export interface GetPersonArgs {
-  appId?: string;
   bioFormat?: BioFormat;
   fields?: Array<PersonField> | '*';
   resolveRedirect?: boolean;
@@ -105,7 +107,6 @@ export async function getPerson(
   options?: ApiOptions
 ): Promise<Person> {
   const request: GetPersonRequest = {
-    appId: args?.appId,
     action: 'getPerson',
     key,
     bioFormat: args?.bioFormat,
@@ -119,7 +120,6 @@ export async function getPerson(
 
 /** Optional arguments for the GetAncestors API call. */
 interface GetAncestorsArgs {
-  appId?: string;
   depth?: number;
   bioFormat?: BioFormat;
   fields?: Array<PersonField> | '*';
@@ -137,7 +137,6 @@ export async function getAncestors(
   options?: ApiOptions
 ): Promise<Person[]> {
   const request: GetAncestorsRequest = {
-    appId: args?.appId,
     action: 'getAncestors',
     key,
     depth: args?.depth,
@@ -152,7 +151,6 @@ export async function getAncestors(
 
 /** Optional arguments for the GetRelatives API call. */
 export interface GetRelativesArgs {
-  appId?: string;
   getParents?: boolean;
   getChildren?: boolean;
   getSpouses?: boolean;
@@ -163,7 +161,6 @@ export interface GetRelativesArgs {
 
 /** Optional arguments for the GetDescendants API call. */
 interface GetDescendantsArgs {
-  appId?: string;
   depth?: number;
   bioFormat?: BioFormat;
   fields?: Array<PersonField> | '*';
@@ -181,7 +178,6 @@ export async function getDescendants(
   options?: ApiOptions
 ): Promise<Person[]> {
   const request: GetDescendantsRequest = {
-    appId: args?.appId,
     action: 'getDescendants',
     key,
     depth: args?.depth,
@@ -212,7 +208,6 @@ export async function getRelatives(
     );
   }
   const request: GetRelativesRequest = {
-    appId: args?.appId,
     action: 'getRelatives',
     keys: keys.join(','),
     getParents: args?.getParents ? 'true' : undefined,
@@ -295,13 +290,15 @@ export function navigateToLoginPage(returnUrl: string) {
 
 export async function clientLogin(
   authcode: string,
-  appId?: string
+  options?: ApiOptions
 ): Promise<ClientLoginResponse> {
-  const response = await wikiTreeGet({
-    appId: appId,
-    action: 'clientLogin',
-    authcode,
-  });
+  const response = await wikiTreeGet(
+    {
+      action: 'clientLogin',
+      authcode,
+    },
+    options
+  );
   const result = response.clientLogin;
   if (result.result === 'Success') {
     Cookies.set(USER_NAME_COOKIE, result.username);
@@ -327,16 +324,18 @@ export async function login(
 async function getAuthcode(
   email: string,
   password: string,
-  appId?: string
+  options?: ApiOptions
 ): Promise<string> {
-  const response = await fetchWikiTree({
-    appId: appId,
-    action: 'clientLogin',
-    doLogin: 1,
-    returnURL: 'https://x/',
-    wpEmail: email,
-    wpPassword: password,
-  } as any);
+  const response = await fetchWikiTree(
+    {
+      action: 'clientLogin',
+      doLogin: 1,
+      returnURL: 'https://x/',
+      wpEmail: email,
+      wpPassword: password,
+    } as any,
+    options
+  );
   if (response.status !== 302) {
     throw new WikiTreeError('Invalid login credentials');
   }
@@ -345,13 +344,15 @@ async function getAuthcode(
 
 async function getAuthCookies(
   authcode: string,
-  appId?: string
+  options?: ApiOptions
 ): Promise<string> {
-  const response = await fetchWikiTree({
-    appId: appId,
-    action: 'clientLogin',
-    authcode,
-  });
+  const response = await fetchWikiTree(
+    {
+      action: 'clientLogin',
+      authcode,
+    },
+    options
+  );
   const result = await response.json();
   if (result.clientLogin?.result !== 'Success') {
     throw new WikiTreeError('Could not authorize authcode');
