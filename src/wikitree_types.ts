@@ -200,6 +200,25 @@ export interface GetRelativesRequest {
   fields?: string;
 }
 
+/**
+ * WikiTree API getPeople request.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getPeople.md
+ */
+export interface GetPeopleRequest {
+  action: 'getPeople';
+  keys: string;
+  bioFormat?: BioFormat;
+  fields?: string;
+  siblings?: '1';
+  ancestors?: number;
+  descendants?: number;
+  nuclear?: number;
+  minGeneration?: number;
+  limit?: number;
+  start?: number;
+}
+
 /** WikiTree API clientLogin request. */
 export interface ClientLoginRequest {
   action: 'clientLogin';
@@ -211,7 +230,8 @@ export type WikiTreeRequest =
   | GetPersonRequest
   | GetAncestorsRequest
   | GetDescendantsRequest
-  | GetRelativesRequest;
+  | GetRelativesRequest
+  | GetPeopleRequest;
 
 /** WikiTree API clientLogin response. */
 export interface ClientLoginResponse {

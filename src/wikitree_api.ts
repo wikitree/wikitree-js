@@ -6,6 +6,7 @@ import {
   ClientLoginResponse,
   GetAncestorsRequest,
   GetDescendantsRequest,
+  GetPeopleRequest,
   GetPersonRequest,
   GetRelativesRequest,
   Person,
@@ -160,7 +161,7 @@ export interface GetRelativesArgs {
 }
 
 /** Optional arguments for the GetDescendants API call. */
-interface GetDescendantsArgs {
+export interface GetDescendantsArgs {
   depth?: number;
   bioFormat?: BioFormat;
   fields?: Array<PersonField> | '*';
@@ -225,6 +226,57 @@ export async function getRelatives(
   return response[0].items.map(
     (item: { person: Person }) => item.person
   ) as Person[];
+}
+
+/** Optional arguments for the GetPeople API call. */
+export interface GetPeopleArgs {
+  siblings?: boolean;
+  ancestors?: number;
+  descendants?: number;
+  nuclear?: number;
+  minGeneration?: number;
+  limit?: number;
+  start?: number;
+  bioFormat?: BioFormat;
+  fields?: Array<PersonField> | '*';
+}
+
+/**
+ * Retrieves relatives from WikiTree for the given array of person IDs.
+ *
+ * See also: https://github.com/wikitree/wikitree-api/blob/main/getPeople.md
+ */
+export async function getPeople(
+  keys: string[],
+  args?: GetPeopleArgs,
+  options?: ApiOptions
+): Promise<Person[]> {
+  if (args?.bioFormat && !args?.fields?.includes('Bio')) {
+    console.warn(
+      'Setting bioFormat has no effect if the "Bio" field is not requested' +
+        ' explicitly'
+    );
+  }
+  const request: GetPeopleRequest = {
+    action: 'getPeople',
+    keys: keys.join(','),
+    siblings: args?.siblings ? '1' : undefined,
+    ancestors: args?.ancestors,
+    descendants: args?.descendants,
+    nuclear: args?.nuclear,
+    minGeneration: args?.minGeneration,
+    limit: args?.limit,
+    start: args?.start,
+    bioFormat: args?.bioFormat,
+    fields:
+      args?.fields instanceof Array ? args.fields.join(',') : args?.fields,
+  };
+  const response = await wikiTreeGet(request, options);
+  console.log(JSON.stringify(response, null, 2));
+  if (response[0].people === null) {
+    return [];
+  }
+  return Object.values(response[0].people) as Person[];
 }
 
 /**
