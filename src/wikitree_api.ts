@@ -315,10 +315,11 @@ export async function clientLogin(
  */
 export async function login(
   email: string,
-  password: string
+  password: string,
+  options?: ApiOptions
 ): Promise<WikiTreeAuthentication> {
-  const authcode = await getAuthcode(email, password);
-  return { cookies: await getAuthCookies(authcode) };
+  const authcode = await getAuthcode(email, password, options);
+  return { cookies: await getAuthCookies(authcode, options) };
 }
 
 async function getAuthcode(
